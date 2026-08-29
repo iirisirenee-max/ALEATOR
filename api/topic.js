@@ -1,28 +1,26 @@
 const systemPrompt = `You are the backend engine for ALEATOR, a knowledge exploration platform designed to spark intense curiosity. 
 You must return a raw JSON object matching the required schema exactly. 
-CRITICAL RULE: Never reuse or repeat previous placeholder examples like "The Immortal Jellyfish". Every response must generate a completely original, unpredictable topic from diverse fields (e.g., historical anomalies, weird quantum physics, obscure linguistic quirks, forgotten structural engineering feats, bizarre biology, cryptographic mysteries).
+
+CRITICAL VARIETY RULES: 
+- Never repeat classic internet facts (e.g., do NOT give me The Great Emu War, The Dancing Plague, Antikythera Mechanism, or Immortal Jellyfish).
+- Lean heavily into hyper-obscure, highly specific historical events, bizarre scientific phenomena, niche sociological trends, unique engineering disasters, or fringe cultural traditions. 
+- Make it genuinely random and avoid common patterns.
 
 Return exactly this JSON layout:
 {
-  "title": "A highly specific, fascinating topic name",
+  "title": "Topic Name",
   "hook": "An absolute jaw-dropping, curiosity-inducing first sentence.",
-  "explanation": "A fascinating 2-3 sentence deep-dive overview written with intense personality.",
+  "explanation": "A fascinating 2-3 sentence overview.",
   "keyFacts": [
-    "Mind-blowing context fact number one",
-    "Mind-blowing context fact number two",
-    "Mind-blowing context fact number three"
+    "Mind-blowing context fact one",
+    "Mind-blowing context fact two",
+    "Mind-blowing context fact three"
   ],
   "depth": "Quick Curiosity",
   "readTime": "3 min read",
-  "relatedTopics": ["Distinct Related Topic A", "Distinct Related Topic B", "Distinct Related Topic C"],
-  "sources": ["Reputable Scientific/Historical Source 1", "Reputable Scientific/Historical Source 2"]
+  "relatedTopics": ["Topic A", "Topic B", "Topic C"],
+  "sources": ["Source 1", "Source 2"]
 }`;
-
-const prompts = {
-  random: "Generate one fascinating, completely unexpected niche topic from any domain of human history or science. Do not repeat previous topics.",
-  deep: "Generate one complex, multi-layered historical or scientific structural mystery that warrants a massive, endless rabbit hole exploration.",
-  chaos: "Generate one wildly bizarre, obscure, or fringe reality anomaly that breaks all conventional learning continuity. Make it completely unpredictable."
-};
 
 export default async function handler(req, res) {
   try {
@@ -33,12 +31,12 @@ export default async function handler(req, res) {
     }
 
     const mode = req.query?.mode || "random";
-    const userPrompt = prompts[mode] || prompts.random;
+    const dynamicCategory = req.query?.category || "any obscure field";
+    
+    // Force the prompt to be unique every time by injecting the random category
+    const userPrompt = `Generate one fascinating, completely unexpected, and hyper-obscure topic specifically related to the field of ${dynamicCategory}. Ensure it feels entirely unique, weird, or niche. Do not give common trivia. Mode context style parameter: ${mode}.`;
 
-    // Use a tiny bit of random padding to force the model to reset its context generation cache
-    const antiCacheSeed = Math.random().toString(36).substring(7);
-
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,10 +46,10 @@ export default async function handler(req, res) {
         model: "openai/gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `${userPrompt} (Seed context token identifier: ${antiCacheSeed})` }
+          { role: "user", content: userPrompt }
         ],
         max_tokens: 600,
-        temperature: 0.85, // Bumped up variation temperature to destroy patterns
+        temperature: 0.95, // Higher temp forces maximum randomness
         response_format: { type: "json_object" }
       })
     });
@@ -70,7 +68,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     return res.status(500).json({
-      error: error?.message || "Something went wrong parsing the rabbit hole data."
+      error: error?.message || "Something went wrong"
     });
   }
 }
