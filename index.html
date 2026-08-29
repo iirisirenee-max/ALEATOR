@@ -34,7 +34,6 @@
     .facts-list li { margin-bottom: 8px; }
     .sources-display { font-size: 0.8rem; color: #777; border-top: 1px solid #eee; padding-top: 10px; }
     
-    /* NEW ADDICTIVE LOOP ELEMENTS */
     .loop-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 2px dashed var(--border); padding-top: 15px; }
     .loop-btn { background: var(--primary); border: 2px solid var(--border); font-weight: 900; padding: 12px; font-size: 1rem; text-transform: uppercase; cursor: pointer; text-align: center; box-shadow: 3px 3px 0 var(--border); width: 100%; }
     .loop-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
@@ -67,7 +66,6 @@
     </div>
   </div>
 
-  <!-- NEW HISTORY WORKSPACE -->
   <div class="history-box" id="historyBox" style="display: none;">
     <div class="history-title">
       <span>📜 Recently Explored</span>
@@ -80,7 +78,6 @@
     let currentMode = 'random';
     let historyStack = JSON.parse(localStorage.getItem('aleator_history')) || [];
 
-    // Run on startup to load past saves
     updateHistoryUI();
 
     function setMode(mode, element) {
@@ -102,10 +99,8 @@
         
         const data = await response.json();
         
-        // Log to browser history setup
         saveToHistory(data.title);
 
-        // Get alternate context macro text for loops
         const alternatePrompts = ["Give me something stranger →", "Take me somewhere unexpected →", "One more rabbit hole →", "Abandon context again →"];
         const randomPromptText = alternatePrompts[Math.floor(Math.random() * alternatePrompts.length)];
         
@@ -126,7 +121,6 @@
             <strong>Verified from:</strong> ${data.sources ? data.sources.join(', ') : 'Open Source Research'}
           </div>
 
-          <!-- THE ADDICTIVE CONTINUITY LOOP -->
           <div class="loop-actions">
             <button class="loop-btn" onclick="fetchRabbitHole()">${randomPromptText}</button>
           </div>
@@ -142,13 +136,17 @@
     }
 
     function saveToHistory(title) {
-      // Don't add consecutive duplicates
-      if (historyStack[0] !== title) {
+      if (!historyStack.includes(title)) {
         historyStack.unshift(title);
-        if (historyStack.length > 5) historyStack.pop(); // Keep top 5 items
+        if (historyStack.length > 5) historyStack.pop();
         localStorage.setItem('aleator_history', JSON.stringify(historyStack));
-        updateHistoryUI();
       }
+      
+      let totalCount = parseInt(localStorage.getItem('aleator_total_count')) || 0;
+      totalCount++;
+      localStorage.setItem('aleator_total_count', totalCount);
+      
+      updateHistoryUI();
     }
 
     function updateHistoryUI() {
@@ -156,13 +154,15 @@
       const list = document.getElementById('historyList');
       const countLabel = document.getElementById('discoveryCount');
       
+      let totalCount = localStorage.getItem('aleator_total_count') || historyStack.length;
+      
       if (historyStack.length === 0) {
         box.style.display = 'none';
         return;
       }
       
       box.style.display = 'block';
-      countLabel.innerText = `${historyStack.length} Discoveries`;
+      countLabel.innerText = `${totalCount} Discoveries`;
       list.innerHTML = historyStack.map(item => `<li class="history-item">• ${item}</li>`).join('');
     }
   </script>
