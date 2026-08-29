@@ -31,13 +31,21 @@ Return ONLY the topic title.
 `
     };
 
+    const apiKey = process.env.OPENROUTER_API_KEY;
+
+    if (!apiKey) {
+      return res.status(500).json({
+        error: "OPENROUTER_API_KEY is missing"
+      });
+    }
+
     const response = await fetch(
       "https://openrouter.ai/api/v1/responses",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "openai/gpt-5-mini",
@@ -58,7 +66,7 @@ Return ONLY the topic title.
 
     if (!topic) {
       return res.status(500).json({
-        error: "OpenRouter returned no topic"
+        error: "No topic returned"
       });
     }
 
