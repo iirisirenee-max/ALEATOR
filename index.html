@@ -1,429 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ALEATOR — Let chance choose what you learn</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
-:root{
---bg:#F5F3ED;
---text:#111;
---muted:#666;
---primary:#C7FF00;
---secondary:#FF4FA3;
---card:#fff
-}
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0
-}
-
-html{
-scroll-behavior:smooth
-}
-
-body{
-min-height:100vh;
-background:var(--bg);
-color:var(--text);
-font-family:"DM Sans",sans-serif
-}
-
-.page{
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:35px 20px
-}
-
-.container{
-width:min(900px,100%);
-text-align:center
-}
-
-.logo{
-font-family:"Space Grotesk",sans-serif;
-font-size:clamp(65px,17vw,150px);
-font-weight:700;
-letter-spacing:-8px;
-line-height:.8
-}
-
-.tagline{
-margin-top:25px;
-font-size:13px;
-letter-spacing:5px;
-font-weight:500;
-color:var(--muted)
-}
-
-.divider{
-width:120px;
-height:4px;
-background:var(--primary);
-margin:55px auto 35px
-}
-
-.intro{
-max-width:700px;
-margin:auto;
-font-family:"Space Grotesk",sans-serif;
-font-size:clamp(28px,6vw,50px);
-line-height:1.05;
-font-weight:500;
-letter-spacing:-2px
-}
-
-.intro em{
-color:var(--secondary);
-font-style:normal
-}
-
-.modes{
-margin:40px auto 20px;
-display:flex;
-justify-content:center;
-gap:10px;
-flex-wrap:wrap
-}
-
-.mode{
-border:2px solid var(--text);
-background:transparent;
-color:var(--text);
-padding:10px 20px;
-border-radius:5px;
-font:700 13px "DM Sans";
-letter-spacing:1px;
-cursor:pointer;
-transition:.2s
-}
-
-.mode:hover{
-transform:translateY(-2px)
-}
-
-.mode.active{
-background:var(--text);
-color:var(--primary)
-}
-
-.choose{
-margin-top:30px;
-width:min(400px,90vw);
-min-height:72px;
-border:3px solid var(--text);
-border-radius:6px;
-background:var(--primary);
-color:var(--text);
-font:700 20px "Space Grotesk";
-letter-spacing:3px;
-cursor:pointer;
-box-shadow:7px 7px 0 var(--text);
-transition:.2s
-}
-
-.choose:hover{
-transform:translate(3px,3px);
-box-shadow:4px 4px 0 var(--text)
-}
-
-.choose:active{
-transform:translate(7px,7px);
-box-shadow:none
-}
-
-.result{
-margin:45px auto 0;
-max-width:760px;
-padding:40px 30px;
-border:3px solid var(--text);
-background:var(--card);
-display:none;
-box-shadow:9px 9px 0 var(--text);
-animation:appear .35s ease
-}
-
-.result.show{
-display:block
-}
-
-@keyframes appear{
-from{
-opacity:0;
-transform:translateY(15px)
-}
-to{
-opacity:1;
-transform:translateY(0)
-}
-}
-
-.result-label{
-display:inline-block;
-padding:7px 12px;
-background:var(--secondary);
-font-size:11px;
-font-weight:700;
-letter-spacing:2px
-}
-
-.topic{
-margin-top:22px;
-font-family:"Space Grotesk",sans-serif;
-font-size:clamp(32px,7vw,58px);
-line-height:1.05;
-font-weight:600;
-letter-spacing:-2px
-}
-
-.question{
-margin:22px auto 0;
-max-width:600px;
-font-size:15px;
-line-height:1.7;
-color:var(--muted)
-}
-
-.search{
-display:inline-block;
-margin-top:28px;
-padding:11px 20px;
-border:2px solid var(--text);
-background:var(--text);
-color:white;
-text-decoration:none;
-font-size:12px;
-font-weight:700;
-letter-spacing:1px;
-transition:.2s
-}
-
-.search:hover{
-background:var(--primary);
-color:var(--text)
-}
-
-.footer{
-margin-top:55px;
-font-size:12px;
-letter-spacing:4px;
-color:var(--muted)
-}
-
-@media(max-width:600px){
-.logo{
-letter-spacing:-5px
-}
-
-.tagline{
-letter-spacing:3px
-}
-
-.divider{
-margin-top:45px
-}
-
-.result{
-padding:30px 20px
-}
-
-.choose{
-margin-top:25px
-}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALEATOR — Let chance choose what you learn</title>
+  <style>
+    :root {
+      --bg: #F4F3EF;
+      --text: #111111;
+      --primary: #CCFF00;
+      --accent: #FF3366;
+      --border: #111111;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+    h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
+    .subtitle { color: var(--accent); font-weight: bold; margin-top: 5px; }
+    .modes { display: flex; gap: 10px; margin-bottom: 25px; }
+    .mode-btn { background: white; border: 2px solid var(--border); padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; box-shadow: 3px 3px 0 var(--border); transition: 0.1s; }
+    .mode-btn.active { background: var(--text); color: white; transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+    .cta-btn { background: var(--primary); border: 2px solid var(--border); width: 100%; max-width: 400px; padding: 15px; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; cursor: pointer; border-radius: 8px; box-shadow: 4px 4px 0 var(--border); margin-bottom: 30px; transition: 0.1s; }
+    .cta-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--border); }
+    .card { background: white; border: 3px solid var(--border); width: 100%; max-width: 450px; padding: 25px; border-radius: 4px; box-shadow: 6px 6px 0 var(--border); display: flex; flex-direction: column; gap: 15px; }
+    .card-tag { background: var(--accent); color: white; font-size: 0.8rem; font-weight: bold; padding: 4px 8px; align-self: flex-start; text-transform: uppercase; letter-spacing: 1px; }
+    .meta-chips { display: flex; gap: 10px; font-size: 0.8rem; font-weight: bold; color: #666; }
+    .title-display { font-size: 1.8rem; font-weight: 800; line-height: 1.2; }
+    .hook-display { font-style: italic; color: #444; border-left: 3px solid var(--primary); padding-left: 10px; line-height: 1.4; }
+    .facts-list { padding-left: 20px; margin: 5px 0; font-size: 0.95rem; line-height: 1.5; }
+    .facts-list li { margin-bottom: 8px; }
+    .sources-display { font-size: 0.8rem; color: #777; border-top: 1px solid #eee; padding-top: 10px; }
+    .footer-links { margin-top: 30px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; color: #555; }
+  </style>
 </head>
-
 <body>
 
-<main class="page">
+  <header>
+    <h1>Aleator</h1>
+    <div class="subtitle">Let chance choose what you learn.</div>
+  </header>
 
-<div class="container">
+  <div class="modes">
+    <button class="mode-btn active" onclick="setMode('random', this)">Random</button>
+    <button class="mode-btn" onclick="setMode('deep', this)">Deep Dive</button>
+    <button class="mode-btn" onclick="setMode('chaos', this)">Chaos</button>
+  </div>
 
-<div class="logo">ALEATOR</div>
+  <button class="cta-btn" id="triggerBtn" onclick="fetchRabbitHole()">✦ Choose For Me ✦</button>
 
-<div class="tagline">
-LET CHANCE CHOOSE WHAT YOU LEARN
-</div>
+  <div class="card" id="displayCard">
+    <div class="card-tag">Your Next Rabbit Hole</div>
+    <div id="cardContent">
+      <div class="title-display" style="text-align:center; color:#888; font-weight:500; margin: 20px 0;">—</div>
+    </div>
+  </div>
 
-<div class="divider"></div>
+  <div class="footer-links">✦ Follow the Rabbit Hole ✦</div>
 
-<p class="intro">
-You don't need to know<br>
-<em>what to learn next.</em>
-</p>
+  <script>
+    let currentMode = 'random';
 
-<div class="modes">
+    function setMode(mode, element) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
 
-<button
-class="mode active"
-onclick="setMode('random',this)">
-RANDOM
-</button>
+    async function fetchRabbitHole() {
+      const btn = document.getElementById('triggerBtn');
+      const container = document.getElementById('cardContent');
+      
+      btn.disabled = true;
+      container.innerHTML = `<div class="title-display" style="text-align:center; color:#555; font-size:1.2rem; margin:20px 0;">Consulting the void...</div>`;
 
-<button
-class="mode"
-onclick="setMode('deep',this)">
-DEEP DIVE
-</button>
-
-<button
-class="mode"
-onclick="setMode('chaos',this)">
-CHAOS
-</button>
-
-</div>
-
-<button
-class="choose"
-onclick="chooseTopic()">
-✦ CHOOSE FOR ME ✦
-</button>
-
-<div class="result" id="result">
-
-<div class="result-label" id="label">
-YOUR NEXT RABBIT HOLE
-</div>
-
-<div class="topic" id="topic">
-—
-</div>
-
-<div class="question" id="question">
-—
-</div>
-
-<a
-class="search"
-id="search"
-href="#"
-target="_blank">
-SEARCH THIS TOPIC →
-</a>
-
-</div>
-
-<div class="footer">
-✦ &nbsp; FOLLOW THE RABBIT HOLE &nbsp; ✦
-</div>
-
-</div>
-
-</main>
-
-<script>
-
-let currentMode="random";
-
-function setMode(mode,button){
-
-currentMode=mode;
-
-document
-.querySelectorAll(".mode")
-.forEach(function(b){
-b.classList.remove("active");
-});
-
-button.classList.add("active");
-
-}
-
-async function chooseTopic(){
-
-const result=
-document.getElementById("result");
-
-const topic=
-document.getElementById("topic");
-
-const question=
-document.getElementById("question");
-
-const label=
-document.getElementById("label");
-
-const search=
-document.getElementById("search");
-
-result.classList.add("show");
-
-topic.textContent=
-"Following the trail...";
-
-question.textContent=
-"Finding something worth getting curious about...";
-
-search.style.display="none";
-
-label.textContent=
-currentMode==="deep"
-?"DEEP DIVE"
-:
-currentMode==="chaos"
-?"CHAOS MODE"
-:
-"YOUR NEXT RABBIT HOLE";
-
-try{
-
-const response=
-await fetch(
-"/api/topic?mode="+
-encodeURIComponent(currentMode)
-);
-
-const data=
-await response.json();
-
-if(!response.ok)
-throw new Error(
-data.error||"API error"
-);
-
-topic.textContent=data.topic;
-
-question.textContent=
-currentMode==="deep"
-?
-"Don't just find the answer. Follow the evidence deeper."
-:
-currentMode==="chaos"
-?
-"You probably weren't expecting this. That's exactly the point."
-:
-"You weren't looking for this. That's exactly the point.";
-
-search.href=
-"https://www.google.com/search?q="+
-encodeURIComponent(data.topic);
-
-search.style.display=
-"inline-block";
-
-}
-catch(error){
-
-topic.textContent=
-"The rabbit disappeared.";
-
-question.textContent=
-"Something went wrong. Try again.";
-
-}
-
-}
-
-</script>
-
+      try {
+        const response = await fetch(`/api/topic?mode=${currentMode}`);
+        if (!response.ok) throw new Error('Failed to load payload');
+        
+        const data = await response.json();
+        
+        container.innerHTML = `
+          <div class="meta-chips">
+            <span>⏱ ${data.readTime || '3 min read'}</span>
+            <span>•</span>
+            <span>📊 ${data.depth || 'Quick Curiosity'}</span>
+          </div>
+          <h2 class="title-display" style="margin-top: 5px; margin-bottom: 10px;">${data.title}</h2>
+          <p class="hook-display">${data.hook}</p>
+          <p style="font-size:0.95rem; line-height:1.4; margin: 10px 0;">${data.explanation}</p>
+          <strong style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px;">What you'll discover:</strong>
+          <ul class="facts-list">
+            ${data.keyFacts.map(fact => `<li>${fact}</li>`).join('')}
+          </ul>
+          <div class="sources-display">
+            <strong>Verified from:</strong> ${data.sources ? data.sources.join(', ') : 'Open Source Research'}
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = `
+          <h2 class="title-display" style="margin-bottom:10px; color: var(--accent);">The rabbit disappeared.</h2>
+          <p style="color:#555;">Something went wrong. Let's try parsing the trail again.</p>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
