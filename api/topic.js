@@ -32,7 +32,7 @@ export default async function handler(req, res) {
         },
 
         body: JSON.stringify({
-          model: "openai/gpt-5-mini",
+          model: "google/gemini-flash-1",
           messages: [
             {
               role: "user",
