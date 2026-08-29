@@ -1,9 +1,9 @@
 const prompts = {
   random:
-    "Give me one fascinating, unexpected topic to learn about. It can come from ANY field: science, history, psychology, technology, nature, culture, art, philosophy, geography, economics, language, or something obscure. Make it genuinely interesting and specific. Return ONLY the topic title, nothing else.",
+    "Give me one fascinating, unexpected topic to learn about. It can be from ANY field: science, history, psychology, technology, nature, culture, art, philosophy, geography, economics, language, or something obscure. Make it genuinely interesting and specific. Return ONLY the topic title, nothing else.",
 
   deep:
-    "Give me one fascinating topic that is worth going down a deep rabbit hole about. It should have layers, history, surprising connections, and plenty to explore. It can come from ANY field. Return ONLY the topic title, nothing else.",
+    "Give me one fascinating topic that is worth going down a deep rabbit hole about. It should have layers, history, surprising connections, and plenty to explore. It can be from ANY field. Return ONLY the topic title, nothing else.",
 
   chaos:
     "Give me one completely unexpected topic to learn about. Make the choice chaotic, weird, surprising, and unrelated to what someone would normally expect. ANY subject is allowed. Return ONLY the topic title, nothing else."
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const mode = req.query?.mode || "random";
 
     const response = await fetch(
-      "https://openrouter.ai/api/v1/responses",
+      "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
 
@@ -33,8 +33,13 @@ export default async function handler(req, res) {
 
         body: JSON.stringify({
           model: "openai/gpt-5-mini",
-          input: prompts[mode] || prompts.random,
-          max_output_tokens: 100
+          messages: [
+            {
+              role: "user",
+              content: prompts[mode] || prompts.random
+            }
+          ],
+          max_tokens: 100
         })
       }
     );
@@ -44,32 +49,26 @@ export default async function handler(req, res) {
     if (!response.ok) {
       return res.status(response.status).json({
         error:
-          data.error?.message ||
-          data.error ||
+          data?.error?.message ||
           "OpenRouter request failed"
       });
     }
 
-    const topic =
-      data.output_text?.trim() ||
-      data.output?.[0]?.content?.[0]?.text?.trim() ||
-      data.output?.[0]?.content?.[0]?.text?.value?.trim() ||
-      data.choices?.[0]?.message?.content?.trim();
+    const topic = data?.choices?.[0]?.message?.content?.trim();
 
     if (!topic) {
       return res.status(500).json({
-        error: "No topic returned",
-        debug: data
+        error: "No topic returned from OpenRouter"
       });
     }
 
     return res.status(200).json({
-      topic
+      topic: topic
     });
 
   } catch (error) {
     return res.status(500).json({
-      error: error.message || "Something went wrong"
+      error: error?.message || "Something went wrong"
     });
   }
 }
