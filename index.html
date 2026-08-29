@@ -2,727 +2,426 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ALEATOR — Let chance choose what you learn</title>
 
 <style>
-
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-:root {
-    --bg: #F5F3ED;
-    --text: #111111;
-    --muted: #666666;
-
-    --primary: #C7FF00;
-    --secondary: #FF4FA3;
-
-    --card: #FFFFFF;
-    --border: #111111;
+:root{
+--bg:#F5F3ED;
+--text:#111;
+--muted:#666;
+--primary:#C7FF00;
+--secondary:#FF4FA3;
+--card:#fff
 }
 
-/* RESET */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
 }
 
-html {
-    scroll-behavior: smooth;
+html{
+scroll-behavior:smooth
 }
 
-body {
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: "DM Sans", sans-serif;
+body{
+min-height:100vh;
+background:var(--bg);
+color:var(--text);
+font-family:"DM Sans",sans-serif
 }
 
-
-/* PAGE */
-
-.page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 35px 20px;
+.page{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:35px 20px
 }
 
-
-/* CONTAINER */
-
-.container {
-    width: min(900px, 100%);
-    text-align: center;
+.container{
+width:min(900px,100%);
+text-align:center
 }
 
-
-/* LOGO */
-
-.logo {
-    font-family: "Space Grotesk", sans-serif;
-    font-size: clamp(65px, 17vw, 150px);
-    font-weight: 700;
-    letter-spacing: -8px;
-    line-height: .8;
-    color: var(--text);
+.logo{
+font-family:"Space Grotesk",sans-serif;
+font-size:clamp(65px,17vw,150px);
+font-weight:700;
+letter-spacing:-8px;
+line-height:.8
 }
 
-
-/* TAGLINE */
-
-.tagline {
-    margin-top: 25px;
-    font-size: 13px;
-    letter-spacing: 5px;
-    font-weight: 500;
-    color: var(--muted);
+.tagline{
+margin-top:25px;
+font-size:13px;
+letter-spacing:5px;
+font-weight:500;
+color:var(--muted)
 }
 
-
-/* DIVIDER */
-
-.divider {
-    width: 120px;
-    height: 4px;
-    background: var(--primary);
-    margin: 55px auto 35px;
+.divider{
+width:120px;
+height:4px;
+background:var(--primary);
+margin:55px auto 35px
 }
 
-
-/* INTRO */
-
-.intro {
-    max-width: 700px;
-    margin: auto;
-    font-family: "Space Grotesk", sans-serif;
-    font-size: clamp(28px, 6vw, 50px);
-    line-height: 1.05;
-    font-weight: 500;
-    letter-spacing: -2px;
+.intro{
+max-width:700px;
+margin:auto;
+font-family:"Space Grotesk",sans-serif;
+font-size:clamp(28px,6vw,50px);
+line-height:1.05;
+font-weight:500;
+letter-spacing:-2px
 }
 
-.intro em {
-    color: var(--secondary);
-    font-style: normal;
+.intro em{
+color:var(--secondary);
+font-style:normal
 }
 
-
-/* MODES */
-
-.modes {
-    margin: 40px auto 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+.modes{
+margin:40px auto 20px;
+display:flex;
+justify-content:center;
+gap:10px;
+flex-wrap:wrap
 }
 
-.mode {
-    border: 2px solid var(--text);
-    background: transparent;
-    color: var(--text);
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-family: "DM Sans", sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: .2s;
+.mode{
+border:2px solid var(--text);
+background:transparent;
+color:var(--text);
+padding:10px 20px;
+border-radius:5px;
+font:700 13px "DM Sans";
+letter-spacing:1px;
+cursor:pointer;
+transition:.2s
 }
 
-.mode:hover {
-    transform: translateY(-2px);
+.mode:hover{
+transform:translateY(-2px)
 }
 
-.mode.active {
-    background: var(--text);
-    color: var(--primary);
+.mode.active{
+background:var(--text);
+color:var(--primary)
 }
 
-
-/* MAIN BUTTON */
-
-.choose {
-    margin-top: 30px;
-    width: min(400px, 90vw);
-    min-height: 72px;
-
-    border: 3px solid var(--text);
-    border-radius: 6px;
-
-    background: var(--primary);
-    color: var(--text);
-
-    font-family: "Space Grotesk", sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 3px;
-
-    cursor: pointer;
-
-    box-shadow: 7px 7px 0 var(--text);
-
-    transition: .2s;
+.choose{
+margin-top:30px;
+width:min(400px,90vw);
+min-height:72px;
+border:3px solid var(--text);
+border-radius:6px;
+background:var(--primary);
+color:var(--text);
+font:700 20px "Space Grotesk";
+letter-spacing:3px;
+cursor:pointer;
+box-shadow:7px 7px 0 var(--text);
+transition:.2s
 }
 
-.choose:hover {
-    transform: translate(3px, 3px);
-    box-shadow: 4px 4px 0 var(--text);
+.choose:hover{
+transform:translate(3px,3px);
+box-shadow:4px 4px 0 var(--text)
 }
 
-.choose:active {
-    transform: translate(7px, 7px);
-    box-shadow: none;
+.choose:active{
+transform:translate(7px,7px);
+box-shadow:none
 }
 
-
-/* RESULT */
-
-.result {
-    margin: 45px auto 0;
-    max-width: 760px;
-
-    padding: 40px 30px;
-
-    border: 3px solid var(--text);
-    background: var(--card);
-
-    display: none;
-
-    box-shadow: 9px 9px 0 var(--text);
-
-    animation: appear .35s ease;
+.result{
+margin:45px auto 0;
+max-width:760px;
+padding:40px 30px;
+border:3px solid var(--text);
+background:var(--card);
+display:none;
+box-shadow:9px 9px 0 var(--text);
+animation:appear .35s ease
 }
 
-.result.show {
-    display: block;
+.result.show{
+display:block
 }
 
-@keyframes appear {
-
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+@keyframes appear{
+from{
+opacity:0;
+transform:translateY(15px)
+}
+to{
+opacity:1;
+transform:translateY(0)
+}
 }
 
-
-/* RESULT LABEL */
-
-.result-label {
-    display: inline-block;
-
-    padding: 7px 12px;
-
-    background: var(--secondary);
-    color: var(--text);
-
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
+.result-label{
+display:inline-block;
+padding:7px 12px;
+background:var(--secondary);
+font-size:11px;
+font-weight:700;
+letter-spacing:2px
 }
 
-
-/* TOPIC */
-
-.topic {
-    margin-top: 22px;
-
-    font-family: "Space Grotesk", sans-serif;
-
-    font-size: clamp(32px, 7vw, 58px);
-
-    line-height: 1.05;
-
-    font-weight: 600;
-
-    letter-spacing: -2px;
+.topic{
+margin-top:22px;
+font-family:"Space Grotesk",sans-serif;
+font-size:clamp(32px,7vw,58px);
+line-height:1.05;
+font-weight:600;
+letter-spacing:-2px
 }
 
-
-/* QUESTION */
-
-.question {
-    margin: 22px auto 0;
-
-    max-width: 600px;
-
-    font-size: 15px;
-
-    line-height: 1.7;
-
-    color: var(--muted);
+.question{
+margin:22px auto 0;
+max-width:600px;
+font-size:15px;
+line-height:1.7;
+color:var(--muted)
 }
 
-
-/* SEARCH */
-
-.search {
-    display: inline-block;
-
-    margin-top: 28px;
-
-    padding: 11px 20px;
-
-    border: 2px solid var(--text);
-
-    background: var(--text);
-
-    color: white;
-
-    text-decoration: none;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 1px;
-
-    transition: .2s;
+.search{
+display:inline-block;
+margin-top:28px;
+padding:11px 20px;
+border:2px solid var(--text);
+background:var(--text);
+color:white;
+text-decoration:none;
+font-size:12px;
+font-weight:700;
+letter-spacing:1px;
+transition:.2s
 }
 
-.search:hover {
-    background: var(--primary);
-    color: var(--text);
+.search:hover{
+background:var(--primary);
+color:var(--text)
 }
 
-
-/* FOOTER */
-
-.footer {
-    margin-top: 55px;
-
-    font-size: 12px;
-
-    letter-spacing: 4px;
-
-    color: var(--muted);
+.footer{
+margin-top:55px;
+font-size:12px;
+letter-spacing:4px;
+color:var(--muted)
 }
 
-
-/* MOBILE */
-
-@media(max-width:600px) {
-
-    .logo {
-        letter-spacing: -5px;
-    }
-
-    .tagline {
-        letter-spacing: 3px;
-    }
-
-    .divider {
-        margin-top: 45px;
-    }
-
-    .result {
-        padding: 30px 20px;
-    }
-
-    .choose {
-        margin-top: 25px;
-    }
-
+@media(max-width:600px){
+.logo{
+letter-spacing:-5px
 }
 
+.tagline{
+letter-spacing:3px
+}
+
+.divider{
+margin-top:45px
+}
+
+.result{
+padding:30px 20px
+}
+
+.choose{
+margin-top:25px
+}
+}
 </style>
 </head>
 
-
 <body>
-
 
 <main class="page">
 
 <div class="container">
 
+<div class="logo">ALEATOR</div>
 
-    <div class="logo">
-        ALEATOR
-    </div>
+<div class="tagline">
+LET CHANCE CHOOSE WHAT YOU LEARN
+</div>
 
+<div class="divider"></div>
 
-    <div class="tagline">
-        LET CHANCE CHOOSE WHAT YOU LEARN
-    </div>
+<p class="intro">
+You don't need to know<br>
+<em>what to learn next.</em>
+</p>
 
+<div class="modes">
 
-    <div class="divider"></div>
+<button
+class="mode active"
+onclick="setMode('random',this)">
+RANDOM
+</button>
 
+<button
+class="mode"
+onclick="setMode('deep',this)">
+DEEP DIVE
+</button>
 
-    <p class="intro">
-        You don't need to know
-        <br>
-        <em>what to learn next.</em>
-    </p>
+<button
+class="mode"
+onclick="setMode('chaos',this)">
+CHAOS
+</button>
 
+</div>
 
-    <div class="modes">
+<button
+class="choose"
+onclick="chooseTopic()">
+✦ CHOOSE FOR ME ✦
+</button>
 
-        <button
-            class="mode active"
-            onclick="setMode('random', this)">
-            RANDOM
-        </button>
+<div class="result" id="result">
 
-        <button
-            class="mode"
-            onclick="setMode('deep', this)">
-            DEEP DIVE
-        </button>
+<div class="result-label" id="label">
+YOUR NEXT RABBIT HOLE
+</div>
 
-        <button
-            class="mode"
-            onclick="setMode('chaos', this)">
-            CHAOS
-        </button>
+<div class="topic" id="topic">
+—
+</div>
 
-    </div>
+<div class="question" id="question">
+—
+</div>
 
+<a
+class="search"
+id="search"
+href="#"
+target="_blank">
+SEARCH THIS TOPIC →
+</a>
 
-    <button
-        class="choose"
-        onclick="chooseTopic()">
+</div>
 
-        ✦ CHOOSE FOR ME ✦
-
-    </button>
-
-
-    <div
-        class="result"
-        id="result">
-
-
-        <div
-            class="result-label"
-            id="label">
-
-            YOUR NEXT RABBIT HOLE
-
-        </div>
-
-
-        <div
-            class="topic"
-            id="topic">
-
-            —
-
-        </div>
-
-
-        <div
-            class="question"
-            id="question">
-
-            —
-
-        </div>
-
-
-        <a
-            class="search"
-            id="search"
-            href="#"
-            target="_blank">
-
-            SEARCH THIS TOPIC →
-
-        </a>
-
-
-    </div>
-
-
-    <div class="footer">
-
-        ✦ &nbsp;
-        FOLLOW THE RABBIT HOLE
-        &nbsp; ✦
-
-    </div>
-
+<div class="footer">
+✦ &nbsp; FOLLOW THE RABBIT HOLE &nbsp; ✦
+</div>
 
 </div>
 
 </main>
 
-
 <script>
 
+let currentMode="random";
 
-let currentMode = "random";
+function setMode(mode,button){
 
+currentMode=mode;
 
-const subjects = [
+document
+.querySelectorAll(".mode")
+.forEach(function(b){
+b.classList.remove("active");
+});
 
-    "the human brain",
-    "ancient civilizations",
-    "black holes",
-    "language",
-    "the ocean",
-    "human memory",
-    "ancient engineering",
-    "volcanoes",
-    "dreams",
-    "the history of maps",
-    "lost cities",
-    "music",
-    "evolution",
-    "the immune system",
-    "architecture",
-    "the mathematics of nature",
-    "time",
-    "artificial intelligence",
-    "the Silk Road",
-    "migration",
-    "myths",
-    "photography",
-    "the nervous system",
-    "ancient astronomy",
-    "cryptography",
-    "probability",
-    "the psychology of crowds",
-    "extinct animals",
-    "food",
-    "shipwrecks",
-    "rituals",
-    "writing systems",
-    "earthquakes",
-    "the history of medicine",
-    "stars",
-    "insects",
-    "civilizations of the Americas",
-    "memory",
-    "currency",
-    "bridges",
-    "deserts",
-    "the origins of cities",
-    "folklore",
-    "mathematical paradoxes",
-    "radio astronomy",
-    "human perception",
-    "ancient weapons",
-    "libraries",
-    "climate",
-    "the history of clothing"
-
-];
-
-
-const angles = [
-
-    "Why does it exist?",
-    "How did it begin?",
-    "How does it actually work?",
-    "What caused it?",
-    "How did humans discover it?",
-    "What changed because of it?",
-    "What can it teach us?",
-    "What would happen without it?",
-    "Why do people misunderstand it?",
-    "How has it changed over time?",
-    "What is the strangest thing about it?",
-    "What is still unknown about it?"
-
-];
-
-
-const deepSubjects = [
-
-    "Why do civilizations collapse?",
-    "How does consciousness emerge from the brain?",
-    "How did humans first develop complex language?",
-    "Why does the universe appear to have more matter than antimatter?",
-    "How did ancient civilizations measure time?",
-    "Why do humans create myths?",
-    "How does collective memory shape history?",
-    "How did trade networks connect the ancient world?",
-    "Why do some technologies disappear from history?",
-    "How does culture evolve?",
-    "What makes a city survive for thousands of years?",
-    "How did humans learn to navigate the oceans?",
-    "Why do empires rise and fall?",
-    "How does the brain construct reality?",
-    "What happens when a language disappears?"
-
-];
-
-
-const chaosA = [
-
-    "the history of",
-    "the hidden science behind",
-    "the forgotten story of",
-    "the strange connection between",
-    "the evolution of",
-    "the mystery of",
-    "the unexpected influence of",
-    "the mathematics behind",
-    "the cultural history of",
-    "the secret life of"
-
-];
-
-
-const chaosB = [
-
-    "salt",
-    "mirrors",
-    "tea",
-    "shadows",
-    "doors",
-    "maps",
-    "perfume",
-    "buttons",
-    "stairs",
-    "coins",
-    "umbrellas",
-    "bread",
-    "libraries",
-    "roads",
-    "names",
-    "bells",
-    "keys",
-    "clocks",
-    "masks"
-
-];
-
-
-function randomItem(array) {
-
-    return array[
-        Math.floor(
-            Math.random() * array.length
-        )
-    ];
+button.classList.add("active");
 
 }
 
+async function chooseTopic(){
 
-function setMode(mode, button) {
+const result=
+document.getElementById("result");
 
-    currentMode = mode;
+const topic=
+document.getElementById("topic");
 
-    document
-        .querySelectorAll(".mode")
-        .forEach(function(item) {
+const question=
+document.getElementById("question");
 
-            item.classList.remove("active");
+const label=
+document.getElementById("label");
 
-        });
+const search=
+document.getElementById("search");
 
-    button.classList.add("active");
+result.classList.add("show");
+
+topic.textContent=
+"Following the trail...";
+
+question.textContent=
+"Finding something worth getting curious about...";
+
+search.style.display="none";
+
+label.textContent=
+currentMode==="deep"
+?"DEEP DIVE"
+:
+currentMode==="chaos"
+?"CHAOS MODE"
+:
+"YOUR NEXT RABBIT HOLE";
+
+try{
+
+const response=
+await fetch(
+"/api/topic?mode="+
+encodeURIComponent(currentMode)
+);
+
+const data=
+await response.json();
+
+if(!response.ok)
+throw new Error(
+data.error||"API error"
+);
+
+topic.textContent=data.topic;
+
+question.textContent=
+currentMode==="deep"
+?
+"Don't just find the answer. Follow the evidence deeper."
+:
+currentMode==="chaos"
+?
+"You probably weren't expecting this. That's exactly the point."
+:
+"You weren't looking for this. That's exactly the point.";
+
+search.href=
+"https://www.google.com/search?q="+
+encodeURIComponent(data.topic);
+
+search.style.display=
+"inline-block";
+
+}
+catch(error){
+
+topic.textContent=
+"The rabbit disappeared.";
+
+question.textContent=
+"Something went wrong. Try again.";
 
 }
 
-
-function chooseTopic() {
-
-    const result =
-        document.getElementById("result");
-
-    const topic =
-        document.getElementById("topic");
-
-    const question =
-        document.getElementById("question");
-
-    const label =
-        document.getElementById("label");
-
-    let chosenTopic;
-    let chosenQuestion;
-
-
-    if (currentMode === "random") {
-
-        const subject =
-            randomItem(subjects);
-
-        const angle =
-            randomItem(angles);
-
-        chosenTopic =
-            angle + " — " + subject;
-
-        chosenQuestion =
-            "Start with the question above. Search it, follow one interesting source, then keep following whatever fascinates you.";
-
-        label.textContent =
-            "YOUR NEXT RABBIT HOLE";
-
-    }
-
-
-    else if (currentMode === "deep") {
-
-        chosenTopic =
-            randomItem(deepSubjects);
-
-        chosenQuestion =
-            "Don't just find the answer. Trace the history, evidence, competing explanations and unanswered questions.";
-
-        label.textContent =
-            "DEEP DIVE";
-
-    }
-
-
-    else {
-
-        chosenTopic =
-            randomItem(chaosA)
-            + " "
-            + randomItem(chaosB);
-
-        chosenQuestion =
-            "You probably weren't expecting this one. That's exactly the point. Search it and see where the rabbit hole takes you.";
-
-        label.textContent =
-            "CHAOS MODE";
-
-    }
-
-
-    topic.textContent =
-        chosenTopic;
-
-    question.textContent =
-        chosenQuestion;
-
-
-    const search =
-        document.getElementById("search");
-
-    search.href =
-        "https://www.google.com/search?q="
-        + encodeURIComponent(chosenTopic);
-
-
-    result.classList.remove("show");
-
-    void result.offsetWidth;
-
-    result.classList.add("show");
-
 }
-
 
 </script>
 
