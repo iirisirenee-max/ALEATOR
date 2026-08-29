@@ -17,12 +17,15 @@
     header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
     h1 { font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; text-transform: uppercase; }
     .subtitle { color: var(--accent); font-weight: bold; margin-top: 5px; }
+    
     .modes { display: flex; gap: 10px; margin-bottom: 25px; }
     .mode-btn { background: white; border: 2px solid var(--border); padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; box-shadow: 3px 3px 0 var(--border); transition: 0.1s; }
     .mode-btn.active { background: var(--text); color: white; transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
-    .cta-btn { background: var(--primary); border: 2px solid var(--border); width: 100%; max-width: 400px; padding: 15px; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; cursor: pointer; border-radius: 8px; box-shadow: 4px 4px 0 var(--border); margin-bottom: 30px; transition: 0.1s; }
+    
+    .cta-btn { background: var(--primary); border: 2px solid var(--border); width: 100%; max-width: 450px; padding: 15px; font-size: 1.2rem; font-weight: 900; text-transform: uppercase; cursor: pointer; border-radius: 8px; box-shadow: 4px 4px 0 var(--border); margin-bottom: 30px; transition: 0.1s; }
     .cta-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--border); }
-    .card { background: white; border: 3px solid var(--border); width: 100%; max-width: 450px; padding: 25px; border-radius: 4px; box-shadow: 6px 6px 0 var(--border); display: flex; flex-direction: column; gap: 15px; }
+    
+    .card { background: white; border: 3px solid var(--border); width: 100%; max-width: 450px; padding: 25px; border-radius: 4px; box-shadow: 6px 6px 0 var(--border); display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
     .card-tag { background: var(--accent); color: white; font-size: 0.8rem; font-weight: bold; padding: 4px 8px; align-self: flex-start; text-transform: uppercase; letter-spacing: 1px; }
     .meta-chips { display: flex; gap: 10px; font-size: 0.8rem; font-weight: bold; color: #666; }
     .title-display { font-size: 1.8rem; font-weight: 800; line-height: 1.2; }
@@ -30,7 +33,16 @@
     .facts-list { padding-left: 20px; margin: 5px 0; font-size: 0.95rem; line-height: 1.5; }
     .facts-list li { margin-bottom: 8px; }
     .sources-display { font-size: 0.8rem; color: #777; border-top: 1px solid #eee; padding-top: 10px; }
-    .footer-links { margin-top: 30px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; color: #555; }
+    
+    /* NEW ADDICTIVE LOOP ELEMENTS */
+    .loop-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; border-top: 2px dashed var(--border); padding-top: 15px; }
+    .loop-btn { background: var(--primary); border: 2px solid var(--border); font-weight: 900; padding: 12px; font-size: 1rem; text-transform: uppercase; cursor: pointer; text-align: center; box-shadow: 3px 3px 0 var(--border); width: 100%; }
+    .loop-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+    
+    .history-box { width: 100%; max-width: 450px; border: 2px dashed #999; padding: 15px; border-radius: 4px; background: rgba(255,255,255,0.5); }
+    .history-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 900; color: #555; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .history-list { list-style: none; font-size: 0.9rem; }
+    .history-item { padding: 4px 0; border-bottom: 1px solid rgba(0,0,0,0.05); color: #444; }
   </style>
 </head>
 <body>
@@ -55,10 +67,21 @@
     </div>
   </div>
 
-  <div class="footer-links">✦ Follow the Rabbit Hole ✦</div>
+  <!-- NEW HISTORY WORKSPACE -->
+  <div class="history-box" id="historyBox" style="display: none;">
+    <div class="history-title">
+      <span>📜 Recently Explored</span>
+      <span id="discoveryCount">0 Discoveries</span>
+    </div>
+    <ul class="history-list" id="historyList"></ul>
+  </div>
 
   <script>
     let currentMode = 'random';
+    let historyStack = JSON.parse(localStorage.getItem('aleator_history')) || [];
+
+    // Run on startup to load past saves
+    updateHistoryUI();
 
     function setMode(mode, element) {
       currentMode = mode;
@@ -79,6 +102,13 @@
         
         const data = await response.json();
         
+        // Log to browser history setup
+        saveToHistory(data.title);
+
+        // Get alternate context macro text for loops
+        const alternatePrompts = ["Give me something stranger →", "Take me somewhere unexpected →", "One more rabbit hole →", "Abandon context again →"];
+        const randomPromptText = alternatePrompts[Math.floor(Math.random() * alternatePrompts.length)];
+        
         container.innerHTML = `
           <div class="meta-chips">
             <span>⏱ ${data.readTime || '3 min read'}</span>
@@ -92,8 +122,13 @@
           <ul class="facts-list">
             ${data.keyFacts.map(fact => `<li>${fact}</li>`).join('')}
           </ul>
-          <div class="sources-display">
+          <div class="sources-display" style="margin-bottom:10px;">
             <strong>Verified from:</strong> ${data.sources ? data.sources.join(', ') : 'Open Source Research'}
+          </div>
+
+          <!-- THE ADDICTIVE CONTINUITY LOOP -->
+          <div class="loop-actions">
+            <button class="loop-btn" onclick="fetchRabbitHole()">${randomPromptText}</button>
           </div>
         `;
       } catch (error) {
@@ -104,6 +139,31 @@
       } finally {
         btn.disabled = false;
       }
+    }
+
+    function saveToHistory(title) {
+      // Don't add consecutive duplicates
+      if (historyStack[0] !== title) {
+        historyStack.unshift(title);
+        if (historyStack.length > 5) historyStack.pop(); // Keep top 5 items
+        localStorage.setItem('aleator_history', JSON.stringify(historyStack));
+        updateHistoryUI();
+      }
+    }
+
+    function updateHistoryUI() {
+      const box = document.getElementById('historyBox');
+      const list = document.getElementById('historyList');
+      const countLabel = document.getElementById('discoveryCount');
+      
+      if (historyStack.length === 0) {
+        box.style.display = 'none';
+        return;
+      }
+      
+      box.style.display = 'block';
+      countLabel.innerText = `${historyStack.length} Discoveries`;
+      list.innerHTML = historyStack.map(item => `<li class="history-item">• ${item}</li>`).join('');
     }
   </script>
 </body>
