@@ -1,10 +1,5 @@
-const systemPrompt = `You are the backend engine for ALEATOR, a knowledge exploration platform designed to spark intense curiosity. 
-You must return a raw JSON object matching the required schema exactly. 
-
-CRITICAL VARIETY RULES: 
-- Never repeat classic internet facts (e.g., do NOT give me The Great Emu War, The Dancing Plague, Antikythera Mechanism, or Immortal Jellyfish).
-- Lean heavily into hyper-obscure, highly specific historical events, bizarre scientific phenomena, niche sociological trends, unique engineering disasters, or fringe cultural traditions. 
-- Make it genuinely random and avoid common patterns.
+const systemPrompt = `You are the backend engine for ALEATOR, a knowledge exploration platform designed to spark intense curiosity.
+You must return a raw JSON object matching the required schema exactly. Do not include markdown formatting.
 
 Return exactly this JSON layout:
 {
@@ -32,11 +27,11 @@ export default async function handler(req, res) {
 
     const mode = req.query?.mode || "random";
     const dynamicCategory = req.query?.category || "any obscure field";
+    const antiCacheSeed = Math.random().toString(36).substring(7);
     
-    // Force the prompt to be unique every time by injecting the random category
-    const userPrompt = `Generate one fascinating, completely unexpected, and hyper-obscure topic specifically related to the field of ${dynamicCategory}. Ensure it feels entirely unique, weird, or niche. Do not give common trivia. Mode context style parameter: ${mode}.`;
+    const userPrompt = `Generate one fascinating, completely unexpected, and hyper-obscure topic specifically related to the field of ${dynamicCategory}. Ensure it feels entirely unique. Seed: ${antiCacheSeed}`;
 
-    const response = await fetch("https://openrouter.ai", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +44,7 @@ export default async function handler(req, res) {
           { role: "user", content: userPrompt }
         ],
         max_tokens: 600,
-        temperature: 0.95, // Higher temp forces maximum randomness
+        temperature: 0.95,
         response_format: { type: "json_object" }
       })
     });
@@ -62,7 +57,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const rawContent = data?.choices?.[0]?.message?.content?.trim() || "";
+    const rawContent = data.choices[0].message.content.trim();
     const topicData = JSON.parse(rawContent);
     return res.status(200).json(topicData);
 
