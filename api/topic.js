@@ -1,28 +1,74 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-5-mini",
-        input: `You are ALEATOR, a curiosity engine.
+    const mode = req.query.mode || "random";
+
+    const prompts = {
+      random: `
 Generate ONE fascinating rabbit-hole topic.
-It can be about science, history, language, nature, art, technology, philosophy, mathematics, culture, or something obscure.
-Avoid generic topics.
-Return ONLY the topic title, nothing else.`
-      })
-    });
+It can be about science, history, language, nature, art,
+technology, philosophy, mathematics, culture, or something obscure.
+
+Make it something that would make someone say:
+"Wait... WHAT?"
+
+Return ONLY the topic title.
+`,
+
+      deep: `
+Generate ONE fascinating topic that deserves a deep dive.
+Choose something with history, evidence, competing explanations,
+and unanswered questions.
+
+Return ONLY the topic title.
+`,
+
+      chaos: `
+Generate ONE wildly unexpected and obscure topic.
+It should feel completely unrelated to anything the user might
+normally search for.
+
+Return ONLY the topic title.
+`
+    };
+
+    const response = await fetch(
+      "https://api.openai.com/v1/responses",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "gpt-5-mini",
+          input: prompts[mode] || prompts.random
+        })
+      }
+    );
 
     const data = await response.json();
 
-    res.status(200).json({
-      topic: data.output_text
+    if (!response.ok) {
+      return res.status(response.status).json({
+        error: data.error?.message || "OpenAI request failed"
+      });
+    }
+
+    const topic = data.output_text?.trim();
+
+    if (!topic) {
+      return res.status(500).json({
+        error: "OpenAI returned no topic"
+      });
+    }
+
+    return res.status(200).json({
+      topic
     });
 
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong." });
+    return res.status(500).json({
+      error: error.message || "Something went wrong"
+    });
   }
 }
