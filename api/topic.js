@@ -32,23 +32,16 @@ Return ONLY the topic title.
     };
 
     const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
+      "https://openrouter.ai/api/v1/responses",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://aleator-sable.vercel.app",
-          "X-Title": "ALEATOR"
+          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
         },
         body: JSON.stringify({
           model: "openai/gpt-5-mini",
-          messages: [
-            {
-              role: "user",
-              content: prompts[mode] || prompts.random
-            }
-          ]
+          input: prompts[mode] || prompts.random
         })
       }
     );
@@ -61,7 +54,7 @@ Return ONLY the topic title.
       });
     }
 
-    const topic = data.choices?.[0]?.message?.content?.trim();
+    const topic = data.output_text?.trim();
 
     if (!topic) {
       return res.status(500).json({
