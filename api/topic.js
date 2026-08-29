@@ -32,16 +32,23 @@ Return ONLY the topic title.
     };
 
     const response = await fetch(
-      "https://api.openai.com/v1/responses",
+      "https://openrouter.ai/api/v1/chat/completions",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "HTTP-Referer": "https://aleator-sable.vercel.app",
+          "X-Title": "ALEATOR"
         },
         body: JSON.stringify({
-          model: "gpt-5-mini",
-          input: prompts[mode] || prompts.random
+          model: "openai/gpt-5-mini",
+          messages: [
+            {
+              role: "user",
+              content: prompts[mode] || prompts.random
+            }
+          ]
         })
       }
     );
@@ -50,15 +57,15 @@ Return ONLY the topic title.
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: data.error?.message || "OpenAI request failed"
+        error: data.error?.message || "OpenRouter request failed"
       });
     }
 
-    const topic = data.output_text?.trim();
+    const topic = data.choices?.[0]?.message?.content?.trim();
 
     if (!topic) {
       return res.status(500).json({
-        error: "OpenAI returned no topic"
+        error: "OpenRouter returned no topic"
       });
     }
 
