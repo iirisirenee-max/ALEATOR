@@ -105,6 +105,100 @@
 
       try {
         const response = await fetch(`/api/topic?mode=${currentMode}&category=${encodeURIComponent(randomCategory)}`);
+        if (!response.ok) throw new Error('Backend script failure');
+        
+        const data = await response.json();
+        
+        if (data.error) throw new Error(data.error);
+
+        saveToHistory(data.title);
+
+        const alternatePrompts = ["Give me something stranger →", "Take me somewhere unexpected →", "One more rabbit hole →", "Abandon context again →"];
+        const randomPromptText = alternatePrompts[Math.floor(Math.random() * alternatePrompts.length)];
+        
+        container.innerHTML = `
+          <div class="meta-chips">
+            <span>⏱ ${data.readTime || '3 min read'}</span>
+            <span>•</span>
+            <span>📊 ${data.depth || 'Quick Curiosity'}</span>
+          </div>
+          <h2 class="title-display" style="margin-top: 5px; margin-bottom: 10px;">${data.title}</h2>
+          <p class="hook-display">${data.hook}</p>
+          <p style="font-size:0.95rem; line-height:1.4; margin: 10px 0;">${data.explanation}</p>
+          <strong style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px;">What you'll discover:</strong>
+          <ul class="facts-list">
+            ${data.keyFacts.map(fact => `<li>${fact}</li>`).join('')}
+          </ul>
+          <div class="sources-display" style="margin-bottom:10px;">
+            <strong>Verified from:</strong> ${data.sources ? data.sources.join(', ') : 'Open Source Research'}
+          </div>
+
+          <div class="loop-actions">
+            <button class="loop-btn" onclick="fetchRabbitHole()">${randomPromptText}</button>
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = `
+          <h2 class="title-display" style="margin-bottom:10px; color: var(--accent); font-size: 1.4rem;">The rabbit disappeared.</h2>
+          <p style="color:#555; font-size:0.95rem;">Error profile trace: ${error.message || 'Unknown network crash'}</p>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function cleanTopicName(text) {
+      if (!text) return '';
+      return text.toLowerCase()
+        .replace(/^(the mysterious case of|the forgotten secrets of|the mystery of|the story of|inside the|secrets of the|secrets of|unveiling the|exploring the)\s+/i, '')
+        .replace(/[^\w\s]/g, '')
+        .trim();
+    }
+
+    function isDuplicateTopic(newTitle) {
+      const cleanNew = cleanTopicName(newTitle);
+      if (!cleanNew) return false;
+
+      return historyStack.some(pastTitle => {
+        const cleanPast = cleanTopicName(pastTitle);
+        if (cleanNew.includes(cleanPast) || cleanPast.includes(cleanNew)) return true;
+
+        const newWords = cleanNew.split(/\s+/).filter(w => w.length > 3);
+        const pastWords = cleanPast.split(/\s+/).filter(w => w.length > 3);
+        if (newWords.length === 0) return false;
+
+        const matches = newWords.filter(word => pastWords.includes(word));
+        return (matches.length / newWords.length) >= 0.6;
+      });
+    }
+
+    function saveToHistory(title) {
+      if (title && !isDuplicateTopic(title)) {
+        historyStack.unshift(title);
+        if (historyStack.length > 5) historyStack.pop();
+        localStorage.setItem('aleator_history', JSON.stringify(historyStack));
+      }
+      
+      let totalCount = parseInt(localStorage.getItem('aleator_total_count')) || 0;
+      totalCount++;
+      localStorage.setItem('aleator_total_count', totalCount);
+      
+      updateHistoryUI();
+    }
+
+    function updateHistoryUI() {
+      const box = document.getElementById('historyBox');
+      const list = document.getElementById('historyList');
+      const countLabel = document.getElementById('discoveryCount');
+      
+      let totalCount = localStorage.getItem('aleator_total_count') || historyStack.length;
+      
+      if (historyStack.length === 0) {
+        box.style.display = 'none';
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+
+      try {
+        const response = await fetch(`/api/topic?mode=${currentMode}&category=${encodeURIComponent(randomCategory)}`);
         if (!response.ok) throw new Error('Failed to load payload');
         
         const data = await response.json();
@@ -196,5 +290,5 @@
       }
       
       box.style.display = 'block';
-      countLabel.innerText = `${totalCount} Discoveries`;
+      countLabel.innerText = `${totalCount} Discoveries`;return;}box.style.display = 'block';countLabel.innerText = ${totalCount} Discoveries;list.innerHTML = historyStack.map(item => <li class="history-item">• ${item}</li>).join('');}
     
