@@ -10,10 +10,10 @@ You must return a raw JSON object matching this schema exactly, with no markdown
     "Mind-blowing fact two",
     "Mind-blowing fact three"
   ],
-  "depth": "Quick Curiosity | Deep Dive | Absolute Chaos",
+  "depth": "Quick Curiosity",
   "readTime": "3 min read",
   "relatedTopics": ["Topic A", "Topic B", "Topic C"],
-  "sources": ["Reputable Source/Publication 1", "Reputable Source/Publication 2"]
+  "sources": ["Reputable Source 1", "Reputable Source 2"]
 }`;
 
 const prompts = {
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     const mode = req.query?.mode || "random";
     const userPrompt = prompts[mode] || prompts.random;
 
-    const response = await fetch("https://openrouter.ai", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
           { role: "user", content: userPrompt }
         ],
         max_tokens: 600,
-        response_format: { type: "json_object" } // Forces the model to return valid JSON
+        response_format: { type: "json_object" }
       })
     });
 
@@ -58,17 +58,13 @@ export default async function handler(req, res) {
       });
     }
 
-    // Clean up the text response just in case the model included markdown blocks
-    let rawContent = data?.choices?.[0]?.message?.content?.trim() || "";
-    if (rawContent.startsWith("```json")) rawContent = rawContent.replace(/^```json/, "").replace(/```\$/, "").trim();
-    if (rawContent.startsWith("```")) rawContent = rawContent.replace(/^```/, "").replace(/```$/, "").trim();
-
+    const rawContent = data?.choices?.[0]?.message?.content?.trim() || "";
     const topicData = JSON.parse(rawContent);
     return res.status(200).json(topicData);
 
   } catch (error) {
     return res.status(500).json({
-      error: error?.message || "Something went wrong parsing the rabbit hole data."
+      error: error?.message || "Something went wrong"
     });
   }
 }
