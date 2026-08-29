@@ -135,6 +135,93 @@
       }
     }
 
+    // NEW SMART FILTER LOGIC
+    function getKeywords(text) {
+      return text.toLowerCase()
+        .replace(/[^\w\s]/g, '') // remove symbols/colons
+        .split(/\s+/)
+        .filter(word => word.length > 3 && !['with', 'from', 'this', 'that', 'your'].includes(word));
+    }
+
+    function isDuplicateTopic(newTitle) {
+      const newKeywords = getKeywords(newTitle);
+      if (newKeywords.length === 0) return false;
+
+      return historyStack.some(pastTitle => {
+        const pastKeywords = getKeywords(pastTitle);
+        // If 75% of key terms overlap, count it as the same topic trail
+        const matches = newKeywords.filter(word => pastKeywords.includes(word));
+        return (matches.length / newKeywords.length) >= 0.75;
+      });
+    }
+
+    function saveToHistory(title) {
+      if (!isDuplicateTopic(title)) {
+        historyStack.unshift(title);
+        if (historyStack.length > 5) historyStack.pop();
+        localStorage.setItem('aleator_history', JSON.stringify(historyStack));
+      }
+      
+      let totalCount = parseInt(localStorage.getItem('aleator_total_count')) || 0;
+      totalCount++;
+      localStorage.setItem('aleator_total_count', totalCount);
+      
+      updateHistoryUI();
+    }
+
+    function updateHistoryUI() {
+      const box = document.getElementById('historyBox');
+      const list = document.getElementById('historyList');
+      const countLabel = document.getElementById('discoveryCount');
+      
+      let totalCount = localStorage.getItem('aleator_total_count') || historyStack.length;
+      
+      if (historyStack.length === 0) {
+        box.style.display = 'none';
+        return;
+      }
+      
+      box.style.display = 'block';
+      countLabel.innerText = `${totalCount} Discoveries`;
+      list.innerHTML = historyStack.map(item => `<li class="history-item">• ${item}</li>`).join('');
+    }
+  </script>
+</body>
+</html>
+        const alternatePrompts = ["Give me something stranger →", "Take me somewhere unexpected →", "One more rabbit hole →", "Abandon context again →"];
+        const randomPromptText = alternatePrompts[Math.floor(Math.random() * alternatePrompts.length)];
+        
+        container.innerHTML = `
+          <div class="meta-chips">
+            <span>⏱ ${data.readTime || '3 min read'}</span>
+            <span>•</span>
+            <span>📊 ${data.depth || 'Quick Curiosity'}</span>
+          </div>
+          <h2 class="title-display" style="margin-top: 5px; margin-bottom: 10px;">${data.title}</h2>
+          <p class="hook-display">${data.hook}</p>
+          <p style="font-size:0.95rem; line-height:1.4; margin: 10px 0;">${data.explanation}</p>
+          <strong style="font-size:0.9rem; text-transform:uppercase; letter-spacing:0.5px;">What you'll discover:</strong>
+          <ul class="facts-list">
+            ${data.keyFacts.map(fact => `<li>${fact}</li>`).join('')}
+          </ul>
+          <div class="sources-display" style="margin-bottom:10px;">
+            <strong>Verified from:</strong> ${data.sources ? data.sources.join(', ') : 'Open Source Research'}
+          </div>
+
+          <div class="loop-actions">
+            <button class="loop-btn" onclick="fetchRabbitHole()">${randomPromptText}</button>
+          </div>
+        `;
+      } catch (error) {
+        container.innerHTML = `
+          <h2 class="title-display" style="margin-bottom:10px; color: var(--accent);">The rabbit disappeared.</h2>
+          <p style="color:#555;">Something went wrong. Let's try parsing the trail again.</p>
+        `;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
     function saveToHistory(title) {
       if (!historyStack.includes(title)) {
         historyStack.unshift(title);
