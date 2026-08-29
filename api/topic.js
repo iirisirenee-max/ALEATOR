@@ -49,7 +49,8 @@ Return ONLY the topic title.
         },
         body: JSON.stringify({
           model: "openai/gpt-5-mini",
-          input: prompts[mode] || prompts.random
+          input: prompts[mode] || prompts.random,
+          max_output_tokens: 100
         })
       }
     );
