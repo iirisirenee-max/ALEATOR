@@ -68,9 +68,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    // FIXED: Uses safe .at(0) method to grab the first choice item flawlessly
-    const firstChoice = data.choices.at(0);
-    const rawContent = firstChoice?.message?.content?.trim() || "";
+    // FIXED: Uses safe, highly compatible array popping to extract the message text cleanly
+    const choiceList = data.choices;
+    const rawContent = choiceList[0]?.message?.content?.trim() || "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content payload." });
