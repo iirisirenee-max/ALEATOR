@@ -36,9 +36,10 @@ export default async function handler(req, res) {
     const perspective = req.query?.perspective || "default";
     const antiCacheSeed = Math.random().toString(36).substring(7);
     
-    const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
+    // FIXED: Added explicit JSON instruction inside the string text to satisfy the API structure validation rule
+    const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory} as a valid JSON object. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
-    const response = await fetch("https://openrouter.ai", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,8 +71,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "OpenRouter returned an empty choices array" });
     }
 
-    // This method safely extracts the first item from the array without using any brackets
-    const firstChoice = data.choices.shift();
+    // FIXED: Safely extracting data fields via standard destructuring to guarantee no script crashes
+    const [firstChoice] = data.choices;
     
     if (!firstChoice || !firstChoice.message || !firstChoice.message.content) {
       return res.status(500).json({ error: "Invalid message structure returned from OpenRouter" });
