@@ -38,11 +38,14 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
+    // FIXED: Changed to the correct OpenRouter chat completions endpoint
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Authorization": `Bearer ${apiKey}`,
+        "HTTP-Referer": "https://vercel.app", 
+        "X-Title": "Aleator"
       },
       body: JSON.stringify({
         model: "openai/gpt-4o-mini",
