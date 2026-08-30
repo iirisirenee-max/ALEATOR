@@ -45,27 +45,22 @@
   </style>
 </head>
 <body>
-
   <header>
     <h1>Aleator</h1>
     <div class="subtitle">Let chance choose what you learn.</div>
   </header>
-
   <div class="modes">
     <button class="mode-btn active" onclick="setMode('random', this)">Random</button>
     <button class="mode-btn" onclick="setMode('deep', this)">Deep Dive</button>
     <button class="mode-btn" onclick="setMode('chaos', this)">Chaos</button>
   </div>
-
   <button class="cta-btn" id="triggerBtn" onclick="fetchRabbitHole()">✦ Choose For Me ✦</button>
-
   <div class="card" id="displayCard">
     <div class="card-tag">Your Next Rabbit Hole</div>
     <div id="cardContent">
       <div class="title-display" style="text-align:center; color:#888; font-weight:500; margin: 20px 0;">—</div>
     </div>
   </div>
-
   <div class="history-box" id="historyBox" style="display: none;">
     <div class="history-title">
       <span>📜 Recently Explored</span>
@@ -73,8 +68,7 @@
     </div>
     <ul class="history-list" id="historyList"></ul>
   </div>
-
-  <script>
+    <script>
     let currentMode = 'random';
     let historyStack = JSON.parse(localStorage.getItem('aleator_history')) || [];
 
@@ -191,7 +185,16 @@
       const countLabel = document.getElementById('discoveryCount');
       
       let totalCount = localStorage.getItem('aleator_total_count') || historyStack.length;
-
-      </script>
+      
+      if (historyStack.length === 0) {
+        box.style.display = 'none';
+        return;
+      }
+      
+      box.style.display = 'block';
+      countLabel.innerText = `${totalCount} Discoveries`;
+      list.innerHTML = historyStack.map(item => `<li class="history-item">• ${item}</li>`).join('');
+    }
+  </script>
 </body>
 </html>
