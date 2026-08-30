@@ -38,6 +38,7 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
+    // FIXED LINK ENDPOINT RIGHT HERE:
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
@@ -68,7 +69,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    // BULLETPROOF: Destructuring the first array item cleanly to prevent Vercel mutations or app display typos
     const [firstChoice] = data.choices;
     const rawContent = firstChoice?.message?.content?.trim() || "";
     
