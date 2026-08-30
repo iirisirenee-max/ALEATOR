@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://aleator-sable.vercel.app", 
+        "HTTP-Referer": "https://vercel.app", 
         "X-Title": "Aleator"
       },
       body: JSON.stringify({
@@ -66,14 +66,15 @@ export default async function handler(req, res) {
       });
     }
 
-    // EXTRACTION FIX: Targeting array item index 0 safely
-    if (!data || !data.choices || !data.choices[0] || !data.choices[0].message) {
-      return res.status(500).json({ error: "OpenRouter returned an empty choices array or missing message key" });
+    // EXTRACTION FIX: Safely extracting the first choice using optional chaining notation
+    const firstChoice = data && data.choices ? data.choices[0] : null;
+
+    if (!firstChoice || !firstChoice.message || !firstChoice.message.content) {
+      return res.status(500).json({ error: "OpenRouter returned an unreadable choice structure." });
     }
 
-    const rawContent = data.choices[0].message.content.trim();
+    const rawContent = firstChoice.message.content.trim();
     const topicData = JSON.parse(rawContent);
-    
     return res.status(200).json(topicData);
 
   } catch (error) {
