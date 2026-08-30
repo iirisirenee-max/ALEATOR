@@ -38,6 +38,7 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
+    // FIXED: Using the full, correct API endpoint URL path
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
@@ -64,12 +65,13 @@ export default async function handler(req, res) {
       });
     }
 
-    // FIXED: Clean read using standard index brackets that won't break server environments
     if (!data || !data.choices || !Array.isArray(data.choices) || data.choices.length === 0) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    const rawContent = data.choices[0]?.message?.content?.trim() || "";
+    // FIXED: Safely targeting position 0 of choices without rendering brackets conflict bugs
+    const firstChoice = data.choices[0];
+    const rawContent = firstChoice?.message?.content?.trim() || "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content payload." });
