@@ -66,20 +66,19 @@ export default async function handler(req, res) {
       });
     }
 
-    // SAFE SELECTION: Grabbing the first item safely without risking markdown array syntax bugs
-    const targetChoice = data.choices && data.choices.length > 0 ? data.choices[0] : null;
-
-    if (!targetChoice || !targetChoice.message) {
-      return res.status(500).json({ error: "OpenRouter returned an unreadable choice array structure." });
+    // BULLETPROOF PARSING: Correctly drilling into OpenRouter's payload structure
+    if (!data || !data.choices || data.choices.length === 0) {
+      return res.status(500).json({ error: "OpenRouter returned an empty choices array" });
     }
 
-    const rawContent = targetChoice.message.content ? targetChoice.message.content.trim() : "";
-    
-    if (!rawContent) {
-      return res.status(500).json({ error: "Empty content returned from engine." });
+    const firstChoice = data.choices[0];
+    if (!firstChoice || !firstChoice.message || !firstChoice.message.content) {
+      return res.status(500).json({ error: "Invalid message structure returned from OpenRouter" });
     }
 
+    const rawContent = firstChoice.message.content.trim();
     const topicData = JSON.parse(rawContent);
+    
     return res.status(200).json(topicData);
 
   } catch (error) {
