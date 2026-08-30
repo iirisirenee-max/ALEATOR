@@ -64,12 +64,12 @@ export default async function handler(req, res) {
       });
     }
 
+    // FIXED: Clean read using standard index brackets that won't break server environments
     if (!data || !data.choices || !Array.isArray(data.choices) || data.choices.length === 0) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    const firstChoice = data.choices.shift();
-    const rawContent = firstChoice?.message?.content?.trim() || "";
+    const rawContent = data.choices[0]?.message?.content?.trim() || "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content payload." });
