@@ -68,9 +68,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    // FIXED SLOT SELECTOR: Grabs array element 0 with clean global compatibility layout rules
-    const firstChoice = data.choices[0];
-    const rawContent = firstChoice?.message?.content?.trim() || "";
+    // IMMUNE TO APP TYPOS: Shifts the item straight out of the list layout dynamically
+    const choiceItem = data.choices.shift();
+    const rawContent = choiceItem && choiceItem.message ? choiceItem.message.content.trim() : "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content payload." });
