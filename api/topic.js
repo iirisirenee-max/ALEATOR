@@ -66,15 +66,20 @@ export default async function handler(req, res) {
       });
     }
 
-    // EXTRACTION FIX: Safely extracting the first choice using optional chaining notation
-    const firstChoice = data && data.choices ? data.choices[0] : null;
+    if (!data || !data.choices || data.choices.length === 0) {
+      return res.status(500).json({ error: "OpenRouter returned an empty choices array" });
+    }
 
+    // This method safely extracts the first item from the array without using any brackets
+    const firstChoice = data.choices.shift();
+    
     if (!firstChoice || !firstChoice.message || !firstChoice.message.content) {
-      return res.status(500).json({ error: "OpenRouter returned an unreadable choice structure." });
+      return res.status(500).json({ error: "Invalid message structure returned from OpenRouter" });
     }
 
     const rawContent = firstChoice.message.content.trim();
     const topicData = JSON.parse(rawContent);
+    
     return res.status(200).json(topicData);
 
   } catch (error) {
