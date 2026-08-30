@@ -38,7 +38,6 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
-    // FIXED: Using the full, correct API endpoint URL path
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
@@ -69,8 +68,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    // FIXED: Safely targeting position 0 of choices without rendering brackets conflict bugs
-    const firstChoice = data.choices[0];
+    // FIXED: Uses safe .at(0) method to grab the first choice item flawlessly
+    const firstChoice = data.choices.at(0);
     const rawContent = firstChoice?.message?.content?.trim() || "";
     
     if (!rawContent) {
