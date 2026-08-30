@@ -66,12 +66,14 @@ export default async function handler(req, res) {
       });
     }
 
-    // FIXED: Correctly matching the OpenRouter array structure with [0]
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      return res.status(500).json({ error: "OpenRouter returned an unreadable choice array." });
+    // SAFE SELECTION: Grabbing the first item safely without risking markdown array syntax bugs
+    const targetChoice = data.choices && data.choices.length > 0 ? data.choices[0] : null;
+
+    if (!targetChoice || !targetChoice.message) {
+      return res.status(500).json({ error: "OpenRouter returned an unreadable choice array structure." });
     }
 
-    const rawContent = data.choices[0].message.content.trim();
+    const rawContent = targetChoice.message.content ? targetChoice.message.content.trim() : "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content returned from engine." });
