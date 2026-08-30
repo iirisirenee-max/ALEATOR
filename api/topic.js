@@ -68,9 +68,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
-    // IMMUNE TO APP TYPOS: Shifts the item straight out of the list layout dynamically
-    const choiceItem = data.choices.shift();
-    const rawContent = choiceItem && choiceItem.message ? choiceItem.message.content.trim() : "";
+    // BULLETPROOF: Destructuring the first array item cleanly to prevent Vercel mutations or app display typos
+    const [firstChoice] = data.choices;
+    const rawContent = firstChoice?.message?.content?.trim() || "";
     
     if (!rawContent) {
       return res.status(500).json({ error: "Empty content payload." });
