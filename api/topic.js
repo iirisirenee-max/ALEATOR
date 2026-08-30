@@ -1,15 +1,21 @@
 const systemPrompt = `You are the backend engine for ALEATOR, a knowledge exploration platform designed to spark intense curiosity.
 You must return a raw JSON object matching the required schema exactly. Do not include markdown formatting tags like \`\`\`json.
 
+CRITICAL MODE RULE: You must tailor the 'explanation' and 'keyFacts' strictly to the requested perspective:
+- 'default': Standard fascinating overview.
+- 'child': Explain like I'm 10 using punchy, simple analogies.
+- 'technical': Give the deep academic, structural, or scientific details.
+- 'weird': Focus entirely on the absolute strangest, most bizarre anomaly about the topic.
+
 Return exactly this JSON layout:
 {
   "title": "Topic Name",
   "hook": "An absolute jaw-dropping, curiosity-inducing first sentence.",
-  "explanation": "A fascinating 2-3 sentence overview.",
+  "explanation": "A fascinating 2-3 sentence overview matched to the perspective.",
   "keyFacts": [
-    "Mind-blowing context fact one",
-    "Mind-blowing context fact two",
-    "Mind-blowing context fact three"
+    "Fact matching perspective one",
+    "Fact matching perspective two",
+    "Fact matching perspective three"
   ],
   "depth": "Quick Curiosity",
   "readTime": "3 min read",
@@ -27,11 +33,12 @@ export default async function handler(req, res) {
 
     const mode = req.query?.mode || "random";
     const dynamicCategory = req.query?.category || "any obscure field";
+    const perspective = req.query?.perspective || "default";
     const antiCacheSeed = Math.random().toString(36).substring(7);
     
-    const userPrompt = `Generate one fascinating, completely unexpected, and hyper-obscure topic specifically related to the field of ${dynamicCategory}. Ensure it feels entirely unique. Mode context parameter: ${mode}. Seed tag string: ${antiCacheSeed}`;
+    const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,16 +64,15 @@ export default async function handler(req, res) {
       });
     }
 
-    // SAFE EXTRACTOR: Avoids array bracket typos completely
     if (!data || !data.choices || !Array.isArray(data.choices) || data.choices.length === 0) {
-      return res.status(500).json({ error: "Invalid choices payload structure returned from API." });
+      return res.status(500).json({ error: "Invalid choices payload structure." });
     }
 
     const firstChoice = data.choices.shift();
     const rawContent = firstChoice?.message?.content?.trim() || "";
     
     if (!rawContent) {
-      return res.status(500).json({ error: "Empty content payload returned from model text segments." });
+      return res.status(500).json({ error: "Empty content payload." });
     }
 
     const topicData = JSON.parse(rawContent);
@@ -74,7 +80,7 @@ export default async function handler(req, res) {
 
   } catch (error) {
     return res.status(500).json({
-      error: error?.message || "Something went wrong parsing the rabbit hole data."
+      error: error?.message || "Something went wrong"
     });
   }
 }
