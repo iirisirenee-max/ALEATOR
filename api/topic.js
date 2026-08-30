@@ -1,5 +1,5 @@
 const systemPrompt = `You are the backend engine for ALEATOR, a knowledge exploration platform designed to spark intense curiosity.
-You must return a raw JSON object matching the required schema exactly. Do not include markdown formatting tags like \`\`\`json.
+You must return a raw JSON object matching the required schema exactly. Do not include markdown formatting tags like \`Official JSON\`.
 
 CRITICAL MODE RULE: You must tailor the 'explanation' and 'keyFacts' strictly to the requested perspective:
 - 'default': Standard fascinating overview.
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({ error: "OPENROUTER_API_KEY is missing" });
+      return res.status(500).json({ error: "OPENROUTER_API_KEY is missing from environment" });
     }
 
     const mode = req.query?.mode || "random";
@@ -38,7 +38,6 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
-    // FIXED LINK ENDPOINT RIGHT HERE:
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
@@ -61,19 +60,19 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: data?.error?.message || "OpenRouter request failed"
+        error: data?.error?.message || "OpenRouter endpoint failed request"
       });
     }
 
-    if (!data || !data.choices || !Array.isArray(data.choices) || data.choices.length === 0) {
-      return res.status(500).json({ error: "Invalid choices payload structure." });
+    // DIRECT READ APPROACH: Zero brackets or structural mutations
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      return res.status(500).json({ error: "OpenRouter returned an unreadable choice array." });
     }
 
-    const [firstChoice] = data.choices;
-    const rawContent = firstChoice?.message?.content?.trim() || "";
+    const rawContent = data.choices[0].message.content.trim();
     
     if (!rawContent) {
-      return res.status(500).json({ error: "Empty content payload." });
+      return res.status(500).json({ error: "Empty content returned from engine." });
     }
 
     const topicData = JSON.parse(rawContent);
