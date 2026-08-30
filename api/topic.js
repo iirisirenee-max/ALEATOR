@@ -38,7 +38,6 @@ export default async function handler(req, res) {
     
     const userPrompt = `Generate one fascinating topic specifically related to the field of ${dynamicCategory}. Perspective setting to use for text style: ${perspective}. Mode: ${mode}. Seed: ${antiCacheSeed}`;
 
-    // FIXED: Changed to the correct OpenRouter chat completions endpoint
     const response = await fetch("https://openrouter.ai", {
       method: "POST",
       headers: {
@@ -67,7 +66,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // DIRECT READ APPROACH: Zero brackets or structural mutations
+    // FIXED: Correctly matching the OpenRouter array structure with [0]
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       return res.status(500).json({ error: "OpenRouter returned an unreadable choice array." });
     }
